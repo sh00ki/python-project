@@ -9,6 +9,7 @@ managers_list = []
 teachers_list = []
 students_list = []
 flag_admin = False
+count_of_students_per_school,count_of_students_per_teacher,count_of_teachers,count_of_managers = 0,0,0,0
 
 
 def main_options():
@@ -67,9 +68,14 @@ def manager_options(flag_admin):
         if option == "1":
             teacher_username = input("Insert teacher username")
             teacher_password = input("Insert teacher password")
-            teacher = Teacher(teacher_username, teacher_password)
-            manager.add_teacher(teacher)
-            teachers_list.append(teacher)
+            global count_of_students_per_school
+            count_of_students_per_school += 1
+            if count_of_teachers < number_of_teachers:
+                teacher = Teacher(teacher_username, teacher_password)
+                manager.add_teacher(teacher)
+                teachers_list.append(teacher)
+            else :
+                print("cant register more teachers to school!")
         elif option == "2":
             teacher_username = input("Insert teacher username")
             teacher_new_username = input("Insert teacher new username")
@@ -88,13 +94,20 @@ def manager_options(flag_admin):
                     if d['username'] == student_username:
                         print('The student ', student.username, ' was registred.')
                         return
-            student = Student(student_username, student_password)
-            print('The student',student_username, 'has added to list')
+            if count_of_students_per_school < number_of_students_per_school:
+                print('The student',student_username, 'has added to list')
+                teacher_username = input("Insert teacher username")
+                if len(teacher.students) < number_of_students_per_teacher:
+                    # TODO - check if the teacher exists
+                    student = Student(student_username, student_password)
+                    manager.add_student_for_teacher(teacher_username, student)
+                    students_list.append(student)
+                else:
+                    print("The student ",student_username," was deleted because he not have teacher")
+                    print("The teacher ", teacher_username, "is full ! - cant register more students to this teacher")
+            else:
+                print("The school is full students, cant register more students")
 
-            teacher_username = input("Insert teacher username")
-            #TODO - check if the teacher exists
-            manager.add_student_for_teacher(teacher_username, student)
-            students_list.append(student)
         elif option == "5":
             student_username = input("Insert student username")
             teacher_username = input("Insert teacher username")
@@ -204,10 +217,12 @@ def print_teachers_free_time():
 
 
 def import_csv_file():
+    row = []
     with open('input.csv', 'rt') as csvfile:
         file = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for row in file:
-            print(', '.join(row))
+        for r in file:
+            row = r
+        return row[0],row[1],row[2],row[3]
 
 
 def export_csv_file():
@@ -217,5 +232,10 @@ def export_csv_file():
 if __name__ == '__main__':
     manager = Manager('Yoad', '1234')
     managers_list.append(manager)
+    cconfig_csv = import_csv_file()
+    print(cconfig_csv[0],cconfig_csv[1],cconfig_csv[2],cconfig_csv[3])
+    number_of_students_per_school = cconfig_csv[0]
+    number_of_students_per_teacher = cconfig_csv[1]
+    number_of_teachers = cconfig_csv[2]
+    number_of_managers = cconfig_csv[3]
     main_options()
-    pass
