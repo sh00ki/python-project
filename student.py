@@ -1,7 +1,7 @@
 
 class Student:
 
-    def __init__(self, username, password):
+    def __init__(self, username, password):  # constractor
         self.username = username
         self.password = password
         self.subjects = []
@@ -11,7 +11,7 @@ class Student:
         for subject in self.subjects:
             print(subject.name, ' ', subject.grade, '\n')
 
-    def print_student_average_grades(self):
+    def print_student_average_grades(self): #average of student
         if len(self.subjects) == 0:
             return 0
 

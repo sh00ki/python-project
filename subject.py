@@ -1,9 +1,11 @@
 
 class Subject:
 
-    def __init__(self, name, grade):
+    def __init__(self, name, grade):  # constractor
         self.name = name
-        self.grade = int(grade) if grade else 0 #TODO - Chcek if grade is between 0-100
+        if grade.isdigit() and grade>=0 and grade<=100:
+            self.grade = int(grade) if grade else 0
 
     def update_grade(self, grade):
-        self.grade = grade  #TODO - Chcek if grade is between 0-100
+        if  grade.isdigit()and grade >= 0 and grade <= 100:
+            self.grade = grade

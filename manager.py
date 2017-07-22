@@ -3,7 +3,7 @@ import statistics as stats
 
 class Manager:
 
-    def __init__(self, username, password):
+    def __init__(self, username, password):  # constractor
         self.username = username
         self.password = password
         self.teachers = []
@@ -28,9 +28,6 @@ class Manager:
                 pass
 
 
-        # for teacher in self.teachers:
-        #     if teacher.username == teacher_name:
-        #         self.teachers.remove(teacher_name)
 
     def add_student_for_teacher(self, teacher_name, student):
         for teacher in self.teachers:
@@ -56,7 +53,7 @@ class Manager:
                     #             if student.username == student_name:
                     #                 teacher.students.remove(student_name)
 
-    def remove_subject_from_student(self, teacher_name, student_name, subject_name):
+    def remove_subject_from_student(self, teacher_name, student_name, subject_name): # we need to found the teacher, student and subject for delete all detalis
         for teacher in self.teachers:
             if teacher.username == teacher_name:
                 for student in teacher.students:
@@ -72,7 +69,7 @@ class Manager:
                 student_avg = teacher.print_students_average()
                 avg_grades.append(student_avg)
 
-        avg_grades.sort()
+        avg_grades.sort() # sort for found the median of al student
         median = stats.median(avg_grades)
 
         return median
@@ -84,8 +81,7 @@ class Manager:
                 student_avg = teacher.print_student_average(student)
                 students_avg.append({"name": student.username, "avg": student_avg})
 
-        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reversed=True)[:3]
-
+        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reverse=True) # sort from max to min by average
         return max_avgs
 
     def get_excellent_students_by_teacher(self):
@@ -95,6 +91,6 @@ class Manager:
                 student_avg = teacher.print_student_average(student)
                 students_avg.append({"name": student.username, "teacher": teacher.username, "avg": student_avg})
 
-        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reversed=True)[:3]
-
-        return max_avgs
+        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reverse=True) # sort from max to min by average
+        return max_avgs # this take the max average of 1 teacher - it can be take a more by return more value or change the sorted function to
+    #sorted(students_avg, key=lambda k: k['avg'], reverse=True)[:3]  - it take the 3 excellent teachers
