@@ -1,4 +1,5 @@
 
+
 class Teacher:
 
     def __init__(self, username, password):
@@ -51,6 +52,24 @@ class Teacher:
             for subject in student.subjects:
                 if subject.name == subject_name:
                     avg += subject.grade
-        avg = avg / len(self.students)
+        avg /= len(self.students)
         print('Subject Average is: ', avg, 'for teacher ', self.username, '\n')
 
+    def print_student_average(self, student):
+        avg = 0
+        for subject in student.subjects:
+            avg += subject.grade
+        avg /= len(student.subjects)
+        return avg
+
+    def print_students_average(self):
+        avg = 0
+        avg_sum = 0
+        for student in self.students:
+            for subject in student.subjects:
+                avg += subject.grade
+            avg /= len(student.subjects)
+            avg_sum += avg
+            avg = 0
+        avg_sum /= len(self.students)
+        return avg_sum

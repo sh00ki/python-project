@@ -89,14 +89,15 @@ def manager_options(flag_admin):
             student_username = input("Insert student username")
             student_password = input("Insert student password")
             for r in students_list:
-                for d in r:
-                    if d['username'] == student_username:
+                for d in vars(r).items():
+                    if d[0] == student_username:
                         print('The student ', student.username, ' was registred.')
                         return
             if len(students_list) <= number_of_students_per_school:
                 print('The student',student_username, 'has added to list')
                 teacher_username = input("Insert teacher username")
-                if validate_teacher_exist(teacher_username):
+                teacher = validate_teacher_exist(teacher_username)
+                if teacher:
                     if len(teacher.students) < number_of_students_per_teacher:
                         # TODO - check if the teacher exists
                         student = Student(student_username, student_password)
@@ -133,11 +134,11 @@ def manager_options(flag_admin):
 def validate_teacher_exist(teacher_name):
     for teacher in teachers_list:
         if teacher.username == teacher_name:
-            return True
-    return False
+            return teacher
+    return None
 
 
-def teacher_options(teacher,flag_teacher):
+def teacher_options(teacher, flag_teacher):
     profession = ["Jewry", "History", "English", "Math", "Computers", "Science"]
     while flag_teacher:
         print('1. Add Subject to Student\n')
@@ -173,7 +174,7 @@ def teacher_options(teacher,flag_teacher):
             subject = input("Insert subject name")
             teacher.print_students_average_subject_grade(subject)
         elif opt == "7":
-            export_xlsx_file("Teacher")
+            export_xlsx_file("Teacher", teacher_obj=teacher)
         elif opt == "8":
             flag_teacher = False
         elif opt == "9":
@@ -192,7 +193,7 @@ def student_options(student, flag_student):
         if opt == "1":
             student.watch_grades()
         elif opt == "2":
-            export_xlsx_file("Student")
+            export_xlsx_file("Student", student_obj=student)
         elif opt == "3":
             flag_student = False
         elif opt == "4":
@@ -241,57 +242,13 @@ def import_csv_file():
         return row[0],row[1],row[2],row[3]
 
 
-def prepare_data(role):
-    data = []
-    if role == 'Manager':
-        data = prepare_manager_data()
-    elif role == 'Teacher':
-        data = prepare_teacher_data()
-    elif role == 'Student':
-        data = prepare_student_data()
-    return data
-
-
-def prepare_manager_data():
-    data = []
-    for teacher in teachers_list:
-        data.append(teacher)
-        for student in teacher.students:
-            data.append(student)
-            for subject in student.subjects:
-                data.append(subject)
-    return data
-
-
-def prepare_teacher_data(teacher):
-    data = []
-    for student in teacher.students:
-        data.append(student)
-        for subject in student.subjects:
-            data.append(subject)
-    return data
-
-
-def prepare_student_data(student):
-    data = []
-    for subject in student.subjects:
-        data.append(subject)
-    return data
-
-
-# def export_csv_file(fields_names, data):
-#     with open('output.csv', 'w') as csvfile:
-#
-#         writer = csv.DictWriter(csvfile, fieldnames=fields_names)
-#         writer.writeheader()
-#
-#         for r in data:
-#             writer.writerow(r)
-
-
-def export_xlsx_file(role):
-    workbook = xlsxwriter.Workbook('output.xlsx')
-    worksheet = workbook.add_worksheet()
+def export_xlsx_file(role, teacher_obj=None, student_obj=None):
+    try:
+        workbook = xlsxwriter.Workbook('output.xlsx')
+        worksheet = workbook.add_worksheet()
+    except ValueError:
+        print(ValueError)
+        return
 
     row = 0
     col = 0
@@ -322,18 +279,63 @@ def export_xlsx_file(role):
                 row += 1
             worksheet.write(row, col + 1, 'Average:')
             worksheet.write(row, col + 2, student.print_student_average_grades())
+            row += 2
         row += 1
 
+        worksheet.write(row, col, 'Students Average:')
+        worksheet.write(row, col+1, teacher.print_students_average())
+        row += 1
 
+        worksheet.write(row, col, 'Median:')
+        worksheet.write(row, col+1, manager.print_students_median())
+        row += 1
+
+        worksheet.write(row, col, "Excellent Students:")
+        row += 1
+        for ex in manager.get_excellent_students():
+            worksheet.write(row, col, ex.name)
+            worksheet.write(row, col+1, ex.avg)
+
+        row += 1
+        for ex in manager.get_excellent_students_by_teacher():
+            worksheet.write(row, col, ex.name)
+            worksheet.write(row, col+1, ex.teacher)
+            worksheet.write(row, col+2, ex.avg)
 
     elif role == 'Teacher':
-        pass
+        worksheet.write(row, col, 'Student')
+        row += 1
+        for student in teacher_obj.students:
+            worksheet.write(row, col, student.username)
+            row += 1
+            for subject in student.subjects:
+                worksheet.write(row, col, subject.name)
+                worksheet.write(row, col+1, subject.grade)
+                row += 1
+            row += 1
+            worksheet.write(row, col, "Student Average:")
+            worksheet.write(row, col+1, teacher_obj.print_student_average(student))
+            row += 1
+
+        worksheet.write(row, col, "Average:")
+        worksheet.write(row, col+1, teacher_obj.print_students_average())
 
     elif role == 'Student':
-        pass
+        worksheet.write(row, col, "Student Grades:")
+        row += 1
+        for subject in student_obj.subjects:
+            worksheet.write(row, col, subject.name)
+            worksheet.write(row, col+1, subject.grade)
 
+        worksheet.write(row, col, "Student Average:")
+        worksheet.write(row, col+1, student_obj.print_student_average_grades())
+        row += 1
 
-    workbook.close()
+    try:
+        workbook.close()
+    except ValueError:
+        print(ValueError)
+        return
 
 
 if __name__ == '__main__':

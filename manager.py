@@ -1,5 +1,5 @@
 from teacher import Teacher
-
+import statistics as stats
 
 class Manager:
 
@@ -64,3 +64,37 @@ class Manager:
                         for subject in student.subjects:
                             if subject.name == subject_name:
                                 student.subjects.remove(subject_name)
+
+    def print_students_median(self):
+        avg_grades = []
+        for teacher in self.teachers:
+            for student in teacher.students:
+                student_avg = teacher.print_students_average(student)
+                avg_grades.append(student_avg)
+
+        avg_grades.sort()
+        median = stats.median(avg_grades)
+
+        return median
+
+    def get_excellent_students(self):
+        students_avg = []
+        for teacher in self.teachers:
+            for student in teacher.students:
+                student_avg = teacher.print_student_average(student)
+                students_avg.append({"name": student.username, "avg": student_avg})
+
+        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reversed=True)[:3]
+
+        return max_avgs
+
+    def get_excellent_students_by_teacher(self):
+        students_avg = []
+        for teacher in self.teachers:
+            for student in teacher.students:
+                student_avg = teacher.print_student_average(student)
+                students_avg.append({"name": student.username, "teacher": teacher.username, "avg": student_avg})
+
+        max_avgs = sorted(students_avg, key=lambda k: k['avg'], reversed=True)[:3]
+
+        return max_avgs
