@@ -1,5 +1,6 @@
 from teacher import Teacher
 
+
 class Manager:
 
     def __init__(self, username, password):
