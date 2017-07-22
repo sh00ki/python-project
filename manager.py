@@ -69,7 +69,7 @@ class Manager:
         avg_grades = []
         for teacher in self.teachers:
             for student in teacher.students:
-                student_avg = teacher.print_students_average(student)
+                student_avg = teacher.print_students_average()
                 avg_grades.append(student_avg)
 
         avg_grades.sort()

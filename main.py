@@ -326,7 +326,8 @@ def export_xlsx_file(role, teacher_obj=None, student_obj=None):
         for subject in student_obj.subjects:
             worksheet.write(row, col, subject.name)
             worksheet.write(row, col+1, subject.grade)
-
+            row+=1
+        row+=1
         worksheet.write(row, col, "Student Average:")
         worksheet.write(row, col+1, student_obj.print_student_average_grades())
         row += 1
