@@ -24,7 +24,9 @@ class Manager:
             if r.username == teacher_name: # if found the teacher
                 self.teachers.remove(r) # remove the teacher
                 return
+
         print("Teacher not in list, cant remove the name")
+
 
 
     def add_student_for_teacher(self, teacher_name, student): # add student to teacher

@@ -98,15 +98,14 @@ def manager_options(flag_admin): # manager options
                 print("Not found the username of teacher")
         elif option == "3":
             teacher_username = input("Insert teacher username")
-            if not manager.remove_teacher(teacher_username): # remove teacher
-                continue
+            manager.remove_teacher(teacher_username) # remove teacher
             print("Done! - teacher has removed")
             for teacher in teachers_list: # check if the name of teacher exist
-                if teacher.name == teacher_username: # if exist remove him
+                if teacher.username == teacher_username: # if exist remove him
                     teachers_list.remove(teacher) # remove teacher from list
         elif option == "4":
             student_username = input("Insert student username")
-            if student_exist(student_username): # check if the name of student exist
+            if not student_exist(student_username): # check if the name of student exist
                 print("Username is exist..")
                 continue
             if not student_username.isalpha():  #the username must be only in alphabet
