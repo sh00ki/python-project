@@ -7,7 +7,7 @@ class Student:
         self.subjects = []
         self.permission = 'student'
 
-    def watch_grades(self):
+    def watch_grades(self): # watch the grades of student
         for subject in self.subjects:
             print(subject.name, ' ', subject.grade, '\n')
 
@@ -16,7 +16,7 @@ class Student:
             return 0
 
         avg = 0
-        for subject in self.subjects:
+        for subject in self.subjects: # sum the all grades of subject
             avg += subject.grade
-        avg /= len(self.subjects)
-        return avg
+        avg /= len(self.subjects) #do to average
+        return avg # reutrn the average

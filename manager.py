@@ -1,4 +1,4 @@
-from teacher import Teacher
+#from teacher import Teacher
 import statistics as stats
 
 class Manager:
@@ -9,60 +9,39 @@ class Manager:
         self.teachers = []
         self.permission = 'manager'
 
-    def add_teacher(self, teacher):
+    def add_teacher(self, teacher): # add teacher to list
         self.teachers.append(teacher)
 
-    def add_teachers(self, teachers):
-        self.teachers = teachers
-
-    def update_teacher(self, teacher_name, new_username):
+    def update_teacher(self, teacher_name, new_username): # update the name of teacher
         for teacher in self.teachers:
-            if teacher.username == teacher_name:
+            if teacher.username == teacher_name: # if found the name
                 teacher.username = new_username
+                return
+        print("Teacher not in list, cant change the name")
 
-    def remove_teacher(self, teacher_name):
+    def remove_teacher(self, teacher_name): # remove teacher
         for r in self.teachers:
-            # for d in r.items():
-            if r.username == teacher_name:
-                self.teachers.remove(r)
-                pass
+            if r.username == teacher_name: # if found the teacher
+                self.teachers.remove(r) # remove the teacher
+                return
+        print("Teacher not in list, cant remove the name")
 
 
-
-    def add_student_for_teacher(self, teacher_name, student):
+    def add_student_for_teacher(self, teacher_name, student): # add student to teacher
         for teacher in self.teachers:
-            if teacher.username == teacher_name:
-                teacher.students.append(student)
-
-    def add_students_for_teacher(self, teacher_name, students):
-        for teacher in self.teachers:
-            if teacher.username == teacher_name:
-                teacher.students = students
+            if teacher.username == teacher_name: #found the teacher
+                teacher.students.append(student) # add the teacher
 
     def remove_student_from_teacher(self, student_name, teacher_name):
-        for r in self.teachers:
+        for r in self.teachers: # looking for teacher in list
             if r.username == teacher_name:
-                for a in r.students:
-                    # for d in r.items():
+                for a in r.students: # looking for student in teacher list
                     if a.username == student_name:
                         r.students.remove(a)
-                    pass
-                    # for teacher in self.teachers:
-                    #     if teacher.username == teacher_name:
-                    #         for student in teacher.students:
-                    #             if student.username == student_name:
-                    #                 teacher.students.remove(student_name)
+                    return True
+        return False
 
-    def remove_subject_from_student(self, teacher_name, student_name, subject_name): # we need to found the teacher, student and subject for delete all detalis
-        for teacher in self.teachers:
-            if teacher.username == teacher_name:
-                for student in teacher.students:
-                    if student.username == student_name:
-                        for subject in student.subjects:
-                            if subject.name == subject_name:
-                                student.subjects.remove(subject_name)
-
-    def print_students_median(self):
+    def print_students_median(self): # found the median
         avg_grades = []
         for teacher in self.teachers:
             for student in teacher.students:
@@ -71,11 +50,10 @@ class Manager:
 
         avg_grades.sort() # sort for found the median of al student
         median = stats.median(avg_grades)
-
         return median
 
-    def get_excellent_students(self):
-        students_avg = []
+    def get_excellent_students(self): # found the excellent student
+        students_avg = [] # list of all student
         for teacher in self.teachers:
             for student in teacher.students:
                 student_avg = teacher.print_student_average(student)

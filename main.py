@@ -69,6 +69,12 @@ def manager_options(flag_admin): # manager options
         if option == "1": # register teacher
             teacher_username = input("Insert teacher username")
             teacher_password = input("Insert teacher password")
+            if not teacher_username.isalpha():
+                print("The username must be a string, not with numbers")
+                continue
+            if teacher_username is None or teacher_username == '' or teacher_password is None or teacher_password == '':
+                print("one of values is null, please try again")
+                continue
             if len(teachers_list) <= number_of_teachers:
                 teacher = Teacher(teacher_username, teacher_password) # send to constractor
                 manager.add_teacher(teacher)
@@ -81,27 +87,36 @@ def manager_options(flag_admin): # manager options
             manager.update_teacher(teacher_username, teacher_new_username) # update the name of the teacher
         elif option == "3":
             teacher_username = input("Insert teacher username")
-            manager.remove_teacher(teacher_username) # remove teacher
+            if not manager.remove_teacher(teacher_username): # remove teacher
+                continue
+            print("Done! - teacher has removed")
             for teacher in teachers_list: # check if the name of teacher exist
                 if teacher.name == teacher_username: # if exist remove him
                     teachers_list.remove(teacher) # remove teacher from list
         elif option == "4":
             student_username = input("Insert student username")
             student_password = input("Insert student password")
+            if not student_username.isalpha():
+                print("The username must be a string, not with numbers")
+                continue
+            if student_username is None or student_username == '' or student_password is None or student_password == '':
+                print("one of values is null, please try again")
+                continue
             for r in students_list:
                 for d in vars(r).items():
                     if d[0] == student_username: # check if the student is exist
                         print('The student ', student.username, ' was registred.')
-                        return
+                        continue
             if len(students_list) <= number_of_students_per_school: # check if the can register students becuase have max
                 print('The student',student_username, 'has added to list')
                 teacher_username = input("Insert teacher username")
                 teacher = validate_teacher_exist(teacher_username)
-                if teacher: # check if the teachr is exist
+                if teacher is not None: # check if the teacher is exist
                     if len(teacher.students) < number_of_students_per_teacher: # every teacher have max students of he/she can teach
                         student = Student(student_username, student_password) # new student - send to constractor
-                        manager.add_student_for_teacher(teacher_username, student) # append the student to tacher
+                        manager.add_student_for_teacher(teacher_username, student) # append the student to teacher
                         students_list.append(student) # add student to list of students
+                        print("Done - The student ",student_username, "added to teacher: ", teacher_username,"\n")
                     else:
                         print("The teacher ", teacher_username, "is full ! - cant register more students to this teacher")
                 else:
@@ -112,9 +127,11 @@ def manager_options(flag_admin): # manager options
         elif option == "5":
             student_username = input("Insert student username")
             teacher_username = input("Insert teacher username")
-            manager.remove_student_from_teacher(student_username, teacher_username) # remove the student from teachr of he/she study with him
+            if  not manager.remove_student_from_teacher(student_username, teacher_username): # remove the student from teachr of he/she study with him
+                print ("Have some problem - cant remove the student")
+                continue
             for student in students_list: # looking for the student
-                if student.name == student_username:
+                if student.username == student_username:
                     students_list.remove(student) # remove the student from list
         elif option == "6":
             generate_free_time() #buliding board for study
@@ -151,20 +168,43 @@ def teacher_options(teacher, flag_teacher):
         opt = input()
         if opt == "1":
             student_username = input("Insert student username")
-            student_subject = input("Insert subject name")
-            student_grade = input("Insert subject grade")
-            subject = Subject(student_subject,student_grade) # send to subject constractor
-            teacher.add_subject_for_student(student_username, subject) # add the subject for student
+            if student_exist(student_username):
+                student_subject = input("Insert subject name")
+                student_grade = input("Insert subject grade")
+                if not student_grade.isdigit():
+                    print("grade must be a number - not a string")
+                    continue
+
+                if int(student_grade) >= 0 and int(student_grade) <= 100:
+                    subject = Subject(student_subject, int(student_grade))  # send to subject constractor
+                    teacher.add_subject_for_student(student_username, subject)  # add the subject for student
+                else:
+                    print("The number is not valid - must be between 0 -100")
+            else:
+                print("Not found the student")
+
         elif opt == "2":
             student_username = input("Insert student username")
-            subject_name = input("Insert subject name")
-            grade = input("Insert grade")
-            teacher.update_grade_for_student(student_username, subject_name, grade) # update the grade of student
+            if student_exist(student_username):
+                subject_name = input("Insert subject name")
+                grade = input("Insert grade")
+                if not grade.isdigit():
+                    print("grade must be a number - not a string")
+                    continue
+                if int(grade) >= 0 and int(grade) <= 100:
+                    teacher.update_grade_for_student(student_username, subject_name, int(grade)) # update the grade of student
+                else:
+                    print("The number is not valid - must be between 0 -100")
+            else:
+                print("Not found the student")
         elif opt == "3":
             teacher.print_students_grade()
         elif opt == "4":
             student_username = input("Insert student username")
-            teacher.print_student_grade(student_username)
+            if student_exist(student_username):
+                teacher.print_student_grade(student_username)
+            else:
+                print("No have name student like this")
         elif opt == "5":
             subject = input("Insert subject name")
             teacher.print_subject_grades(subject)
@@ -179,6 +219,12 @@ def teacher_options(teacher, flag_teacher):
             exit(0)
         else:
             print("Wrong Number...")
+
+def student_exist(student_username):
+    for student in students_list:  # check if the name of student exist
+        if student.username == student_username:  # if found the name of student in list
+            return True
+    return False
 
 
 def student_options(student, flag_student):
@@ -209,6 +255,9 @@ def remove_teacher(teacher_name): # remove teacher from list
         for k in teacher.keys():
             if teacher.username == teacher_name:
                 teachers_list.remove(teacher_name)
+                return True
+    print("Cant delete the teacher, teacher not found in list")
+    return False
 
 
 def generate_free_time():
