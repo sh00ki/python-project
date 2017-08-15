@@ -46,7 +46,7 @@ class Manager:
         median=0
         for teacher in self.teachers:
             for student in teacher.students:
-                student_avg = teacher.print_students_average()
+                student_avg = teacher.print_student_average(student)
                 avg_grades.append(student_avg)
 
         avg_grades.sort() # sort for found the median of al student

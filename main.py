@@ -186,6 +186,7 @@ def teacher_options(teacher, flag_teacher):
                 if int(student_grade) >= 0 and int(student_grade) <= 100:
                     subject = Subject(student_subject, int(student_grade))  # send to subject constractor
                     teacher.add_subject_for_student(student_username, subject)  # add the subject for student
+                    print("The grade was updated")
                 else:
                     print("The number is not valid - must be between 0 -100")
             else:
@@ -201,6 +202,7 @@ def teacher_options(teacher, flag_teacher):
                     continue
                 if int(grade) >= 0 and int(grade) <= 100:
                     teacher.update_grade_for_student(student_username, subject_name, int(grade)) # update the grade of student
+                    print("The grade was updated")
                 else:
                     print("The number is not valid - must be between 0 -100")
             else:
