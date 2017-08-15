@@ -68,23 +68,31 @@ def manager_options(flag_admin): # manager options
         option = input()
         if option == "1": # register teacher
             teacher_username = input("Insert teacher username")
-            teacher_password = input("Insert teacher password")
-            if not teacher_username.isalpha():
-                print("The username must be a string, not with numbers")
-                continue
-            if teacher_username is None or teacher_username == '' or teacher_password is None or teacher_password == '':
-                print("one of values is null, please try again")
-                continue
-            if len(teachers_list) <= number_of_teachers:
-                teacher = Teacher(teacher_username, teacher_password) # send to constractor
-                manager.add_teacher(teacher)
-                teachers_list.append(teacher) # append the teacher to list
-            else :
-                print("Can't register more teachers to school!")
+            if validate_teacher_exist(teacher_username) is None:
+                teacher_password = input("Insert teacher password")
+                if not teacher_username.isalpha():
+                    print("The username must be a string, not with numbers")
+                    continue
+                if teacher_username is None or teacher_username == '' or teacher_password is None or teacher_password == '':
+                    print("one of values is null, please try again")
+                    continue
+                if len(teachers_list) <= number_of_teachers:
+                    teacher = Teacher(teacher_username, teacher_password) # send to constractor
+                    manager.add_teacher(teacher)
+                    teachers_list.append(teacher) # append the teacher to list
+                else :
+                    print("Can't register more teachers to school!")
+                print("Done ! new teacher has registered to school")
+            else:
+                print("the username of this teacher is exist, back to main...")
         elif option == "2":
             teacher_username = input("Insert teacher username")
-            teacher_new_username = input("Insert teacher new username")
-            manager.update_teacher(teacher_username, teacher_new_username) # update the name of the teacher
+            if not validate_teacher_exist(teacher_username) is None:
+                teacher_new_username = input("Insert teacher new username")
+                manager.update_teacher(teacher_username, teacher_new_username) # update the name of the teacher
+                print("Done! - the name of teacher was updated!")
+            else:
+                print("Not found the username of teacher")
         elif option == "3":
             teacher_username = input("Insert teacher username")
             if not manager.remove_teacher(teacher_username): # remove teacher
@@ -399,9 +407,9 @@ def export_xlsx_file(role, teacher_obj=None, student_obj=None):
 
     try:
         workbook.close()
-    except ValueError:
-        print(ValueError)
-        return
+        print("Done ! final report was created")
+    except IOError:
+        print ("Could not Create a file! Please close Excel!")
 
 
 if __name__ == '__main__':
