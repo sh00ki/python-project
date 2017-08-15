@@ -68,15 +68,15 @@ def manager_options(flag_admin): # manager options
         option = input()
         if option == "1": # register teacher
             teacher_username = input("Insert teacher username")
-            if validate_teacher_exist(teacher_username) is None:
+            if validate_teacher_exist(teacher_username) is None: # check if username is exist
                 teacher_password = input("Insert teacher password")
-                if not teacher_username.isalpha():
+                if not teacher_username.isalpha(): #the username must be only in alphabet
                     print("The username must be a string, not with numbers")
                     continue
-                if teacher_username is None or teacher_username == '' or teacher_password is None or teacher_password == '':
+                if teacher_username is None or teacher_username == '' or teacher_password is None or teacher_password == '': # if the username enter none/null
                     print("one of values is null, please try again")
                     continue
-                if len(teachers_list) <= number_of_teachers:
+                if len(teachers_list) <= number_of_teachers: #check if teacher is not overflow from input.csv file
                     teacher = Teacher(teacher_username, teacher_password) # send to constractor
                     manager.add_teacher(teacher)
                     teachers_list.append(teacher) # append the teacher to list
@@ -87,8 +87,11 @@ def manager_options(flag_admin): # manager options
                 print("the username of this teacher is exist, back to main...")
         elif option == "2":
             teacher_username = input("Insert teacher username")
-            if not validate_teacher_exist(teacher_username) is None:
+            if not validate_teacher_exist(teacher_username) is None: # check if username is exist
                 teacher_new_username = input("Insert teacher new username")
+                if not teacher_new_username.isalpha(): #the username must be only in alphabet
+                    print("The username must be a string, not with numbers")
+                    continue
                 manager.update_teacher(teacher_username, teacher_new_username) # update the name of the teacher
                 print("Done! - the name of teacher was updated!")
             else:
@@ -103,11 +106,14 @@ def manager_options(flag_admin): # manager options
                     teachers_list.remove(teacher) # remove teacher from list
         elif option == "4":
             student_username = input("Insert student username")
-            student_password = input("Insert student password")
-            if not student_username.isalpha():
+            if student_exist(student_username): # check if the name of student exist
+                print("Username is exist..")
+                continue
+            if not student_username.isalpha():  #the username must be only in alphabet
                 print("The username must be a string, not with numbers")
                 continue
-            if student_username is None or student_username == '' or student_password is None or student_password == '':
+            student_password = input("Insert student password")
+            if student_username is None or student_username == '' or student_password is None or student_password == '':  # if the username enter none/null
                 print("one of values is null, please try again")
                 continue
             for r in students_list:
@@ -175,15 +181,15 @@ def teacher_options(teacher, flag_teacher):
         print('9. Quit')
         opt = input()
         if opt == "1":
-            student_username = input("Insert student username")
-            if student_exist(student_username):
-                student_subject = input("Insert subject name")
-                student_grade = input("Insert subject grade")
-                if not student_grade.isdigit():
+            student_username = input("Insert student username") # the name of student
+            if student_exist(student_username): # check if the name exist
+                student_subject = input("Insert subject name") # the name of subject
+                student_grade = input("Insert subject grade") #grade of subject
+                if not student_grade.isdigit(): # check if the grade is digit
                     print("grade must be a number - not a string")
                     continue
 
-                if int(student_grade) >= 0 and int(student_grade) <= 100:
+                if int(student_grade) >= 0 and int(student_grade) <= 100: # check if the grade is between 0 - 100
                     subject = Subject(student_subject, int(student_grade))  # send to subject constractor
                     teacher.add_subject_for_student(student_username, subject)  # add the subject for student
                     print("The grade was updated")
@@ -192,15 +198,15 @@ def teacher_options(teacher, flag_teacher):
             else:
                 print("Not found the student")
 
-        elif opt == "2":
+        elif opt == "2": # update grtade
             student_username = input("Insert student username")
-            if student_exist(student_username):
+            if student_exist(student_username): # check if the name exist
                 subject_name = input("Insert subject name")
                 grade = input("Insert grade")
-                if not grade.isdigit():
+                if not grade.isdigit():   # check if the grade is digit
                     print("grade must be a number - not a string")
                     continue
-                if int(grade) >= 0 and int(grade) <= 100:
+                if int(grade) >= 0 and int(grade) <= 100:  # check if the grade is between 0 - 100
                     teacher.update_grade_for_student(student_username, subject_name, int(grade)) # update the grade of student
                     print("The grade was updated")
                 else:
@@ -208,22 +214,22 @@ def teacher_options(teacher, flag_teacher):
             else:
                 print("Not found the student")
         elif opt == "3":
-            teacher.print_students_grade()
-        elif opt == "4":
+            teacher.print_students_grade() #print the grades of all students
+        elif opt == "4": # print the grade of specific student
             student_username = input("Insert student username")
-            if student_exist(student_username):
+            if student_exist(student_username): # check if username exist
                 teacher.print_student_grade(student_username)
             else:
                 print("No have name student like this")
-        elif opt == "5":
+        elif opt == "5": # print average of subject per specific teacher
             subject = input("Insert subject name")
             teacher.print_subject_grades(subject)
         elif opt == "6":
             subject = input("Insert subject name")
             teacher.print_students_average_subject_grade(subject)
-        elif opt == "7":
+        elif opt == "7": # export final report for teacher
             export_xlsx_file("Teacher", teacher_obj=teacher)
-        elif opt == "8":
+        elif opt == "8": # exit from this main to main program
             flag_teacher = False
         elif opt == "9":
             exit(0)
@@ -237,7 +243,7 @@ def student_exist(student_username):
     return False
 
 
-def student_options(student, flag_student):
+def student_options(student, flag_student): # student options
     while flag_student:
         print("1. Watch Grades\n")
         print("2. Output Report\n")
@@ -245,32 +251,32 @@ def student_options(student, flag_student):
         print("4. Exit\n")
         opt = input()
         if opt == "1":
-            student.watch_grades()
+            student.watch_grades() # watch of grades of specific student
         elif opt == "2":
-            export_xlsx_file("Student", student_obj=student)
+            export_xlsx_file("Student", student_obj=student) # final report for specific student
         elif opt == "3":
-            flag_student = False
+            flag_student = False # exit to main program
         elif opt == "4":
             exit(0)
 
 
-def register_teacher():
-    username = input("What is your username? ")
-    password = input("What is your password? ")
+def register_teacher(): # register new teacher
+    username = input("What is your username? ") #username
+    password = input("What is your password? ") #password
     teacher = Teacher(username, password) # constractor
 
 
 def remove_teacher(teacher_name): # remove teacher from list
-    for teacher in teachers_list:
+    for teacher in teachers_list: # looking for specific teacher
         for k in teacher.keys():
             if teacher.username == teacher_name:
-                teachers_list.remove(teacher_name)
+                teachers_list.remove(teacher_name) # reutrn TRUE if teacher has removced
                 return True
     print("Cant delete the teacher, teacher not found in list")
     return False
 
 
-def generate_free_time():
+def generate_free_time(): # list of board teaching
     possible_times = 3
     min_time = 8 # strat work at 8:00
     max_time = 17 # finish to work at 17:00

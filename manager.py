@@ -42,19 +42,19 @@ class Manager:
         return False
 
     def print_students_median(self): # found the median
-        avg_grades = []
+        avg_grades = [] # the average of all students
         median=0
         for teacher in self.teachers:
             for student in teacher.students:
                 student_avg = teacher.print_student_average(student)
-                avg_grades.append(student_avg)
+                avg_grades.append(student_avg) # add average to list
 
         avg_grades.sort() # sort for found the median of al student
         if len(avg_grades) != 0:
             median = stats.median(avg_grades)
         return median
 
-    def get_excellent_students(self): # found the excellent student
+    def get_excellent_students(self): # found the excellent student from all school
         students_avg = [] # list of all student
         for teacher in self.teachers:
             for student in teacher.students:
@@ -64,7 +64,7 @@ class Manager:
         max_avgs = sorted(students_avg, key=lambda k: k['avg'], reverse=True) # sort from max to min by average
         return max_avgs
 
-    def get_excellent_students_by_teacher(self):
+    def get_excellent_students_by_teacher(self): # exceleent student with name of teachers
         students_avg = []
         for teacher in self.teachers:
             for student in teacher.students:

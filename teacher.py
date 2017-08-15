@@ -62,9 +62,9 @@ class Teacher:
             return 0
 
         avg = 0
-        for subject in student.subjects:
+        for subject in student.subjects: # running of all subject
             avg += subject.grade
-        avg /= len(student.subjects)
+        avg /= len(student.subjects) #average of student
         return avg
 
     def print_students_average(self): # average of all students
@@ -72,12 +72,12 @@ class Teacher:
             return 0
         avg = 0
         avg_sum = 0
-        for student in self.students:
+        for student in self.students: # running of all student
             for subject in student.subjects:
-                avg += subject.grade
+                avg += subject.grade # sum the grade
             if len(student.subjects) != 0:
-                avg /= len(student.subjects)
-                avg_sum += avg
-            avg = 0
-        avg_sum /= len(self.students)
+                avg /= len(student.subjects) # do the average
+                avg_sum += avg # average of all students
+            avg = 0 # goto next student..
+        avg_sum /= len(self.students) # divide by all student
         return avg_sum
