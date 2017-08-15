@@ -318,6 +318,7 @@ def export_xlsx_file(role, teacher_obj=None, student_obj=None):
             row += 1
 
         row += 1
+        avg_students = 0
         for student in students_list:
             worksheet.write(row, col, student.username)
             for subject in student.subjects:
@@ -325,14 +326,18 @@ def export_xlsx_file(role, teacher_obj=None, student_obj=None):
                 worksheet.write(row, col+2, subject.grade) # write the grade of student
                 row += 1
             worksheet.write(row, col + 1, 'Average:')
-            worksheet.write(row, col + 2, student.print_student_average_grades()) # write the average
+            avg_this_student = student.print_student_average_grades()
+            avg_students += avg_this_student
+            worksheet.write(row, col + 2, avg_this_student) # write the average
             row += 2
         row += 1
 
         worksheet.write(row, col, 'Students Average:')
-        if teacher_obj is None:
-            return
-        worksheet.write(row, col+1, teacher.print_students_average()) # wirte the average of all students
+        # if teacher_obj is None:
+        #     return
+        if len(students_list) != 0:
+            avg_students /= len(students_list)
+        worksheet.write(row, col+1, avg_students) # wirte the average of all students
         row += 1
 
         worksheet.write(row, col, 'Median:')

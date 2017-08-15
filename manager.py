@@ -43,13 +43,15 @@ class Manager:
 
     def print_students_median(self): # found the median
         avg_grades = []
+        median=0
         for teacher in self.teachers:
             for student in teacher.students:
                 student_avg = teacher.print_students_average()
                 avg_grades.append(student_avg)
 
         avg_grades.sort() # sort for found the median of al student
-        median = stats.median(avg_grades)
+        if len(avg_grades) != 0:
+            median = stats.median(avg_grades)
         return median
 
     def get_excellent_students(self): # found the excellent student
